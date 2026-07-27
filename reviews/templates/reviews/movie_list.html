@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Letterboxd Clone</title>
+</head>
+<body>
+    <h1>Catálogo de Filmes</h1>
+    <hr>
+    
+    {% for movie in movies %}
+        <div>
+            <h2>{{ movie.title }} ({{ movie.release_year }})</h2>
+            
+            {% if movie.poster %}
+                <img src="{{ movie.poster.url }}" alt="Pôster de {{ movie.title }}" style="max-width: 200px; display: block; margin-bottom: 10px;">
+            {% endif %}
+            
+            <p>{{ movie.synopsis }}</p>
+            <a href="#">Ver avaliações</a>
+        </div>
+        <hr>
+    {% empty %}
+        <p>Nenhum filme cadastrado ainda. Use o painel de Admin para adicionar!</p>
+    {% endfor %}
+</body>
+</html>
