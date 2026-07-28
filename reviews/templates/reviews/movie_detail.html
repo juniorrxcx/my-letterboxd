@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ movie.title }} - Detalhes</title>
+    
+    <link rel="stylesheet" href="{% static 'reviews/css/style.css' %}">
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
+    
+    <a href="{% url 'movie_list' %}" style="text-decoration: none; color: #555;">← Voltar para o Catálogo</a>
+    
+    <h1>{{ movie.title }} ({{ movie.release_year }})</h1>
+    
+    {% if movie.poster %}
+        <img src="{{ movie.poster.url }}" alt="Pôster de {{ movie.title }}" style="max-width: 300px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px;">
+    {% endif %}
+    
+    <p style="font-size: 1.1em; line-height: 1.6;"><strong>Sinopse:</strong> {{ movie.synopsis }}</p>
+
+    <hr style="margin: 30px 0; border: 1px solid #eee;">
+    
+    <h2>Avaliações dos Usuários</h2>
+
+    {% if user.is_authenticated %}
+        <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+            <h3 style="margin-top: 0;">Deixe sua avaliação:</h3>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="rating-stars">
+                    <input type="radio" id="star5" name="rating" value="5">
+                    <label for="star5" title="5 estrelas">★</label>
+
+                    <input type="radio" id="star4" name="rating" value="4">
+                    <label for="star4" title="4 estrelas">★</label>
+
+                    <input type="radio" id="star3" name="rating" value="3">
+                    <label for="star3" title="3 estrelas">★</label>
+
+                    <input type="radio" id="star2" name="rating" value="2">
+                    <label for="star2" title="2 estrelas">★</label>
+
+                    <input type="radio" id="star1" name="rating" value="1" required>
+                    <label for="star1" title="1 estrela">★</label>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label for="id_comment" style="display: block; font-weight: bold; margin-bottom: 5px;">Comentário (opcional):</label>
+                    {{ form.comment }}
+                </div>
+                
+                <button type="submit" style="background-color: #00b020; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px;">Publicar Avaliação</button>
+            </form>
+        </div>
+    {% else %}
+        <p>Você precisa <a href="{% url 'login' %}">fazer login</a> para avaliar este filme.</p>
+    {% endif %}
+
+    {% for review in reviews %}
+        <div style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px;">
+            <p style="margin-bottom: 5px;">
+                <strong>{{ review.user.username }}</strong> 
+                <span class="stars-display">
+                    {% if review.rating == 1 %}★{% endif %}
+                    {% if review.rating == 2 %}★★{% endif %}
+                    {% if review.rating == 3 %}★★★{% endif %}
+                    {% if review.rating == 4 %}★★★★{% endif %}
+                    {% if review.rating == 5 %}★★★★★{% endif %}
+                </span>
+            </p>
+            
+            {% if review.comment %}
+                <p style="margin-top: 5px; color: #444;"><em>"{{ review.comment }}"</em></p>
+            {% endif %}
+            
+            <p style="margin-top: 5px; color: #888;"><small>Em: {{ review.created_at|date:"d/m/Y H:i" }}</small></p>
+
+            <div style="margin-top: 10px;">
+                <form action="{% url 'toggle_like' review.id %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background: none; border: 1px solid #ddd; padding: 5px 10px; border-radius: 20px; cursor: pointer; color: #e0245e; font-size: 14px; display: flex; align-items: center; gap: 5px;">
+                        ♥ {{ review.likes.count }} 
+                        {% if review.likes.count == 1 %}Curtida{% else %}Curtidas{% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    {% empty %}
+        <p>Este filme ainda não tem avaliações. Seja o primeiro!</p>
+    {% endfor %}
+
+</body>
+</html>

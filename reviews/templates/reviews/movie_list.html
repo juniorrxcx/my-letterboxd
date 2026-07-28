@@ -2,10 +2,19 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Letterboxd Clone</title>
+    <title>My Letterboxd</title>
 </head>
 <body>
     <h1>Catálogo de Filmes</h1>
+    
+    <div style="margin-bottom: 20px;">
+        {% if user.is_authenticated %}
+            <p>Olá, {{ user.username }}! <a href="{% url 'logout' %}">Sair</a></p>
+        {% else %}
+            <p><a href="{% url 'login' %}">Faça Login</a> ou <a href="{% url 'signup' %}">Cadastre-se</a></p>
+        {% endif %}
+    </div>
+
     <hr>
     
     {% for movie in movies %}
@@ -17,7 +26,7 @@
             {% endif %}
             
             <p>{{ movie.synopsis }}</p>
-            <a href="#">Ver avaliações</a>
+            <a href="{% url 'movie_detail' movie.id %}">Ver detalhes e avaliações</a>
         </div>
         <hr>
     {% empty %}
