@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from .models import Movie, Review, Like
 from .forms import ReviewForm
 
@@ -54,3 +55,13 @@ def toggle_like(request, review_id):
         return redirect('movie_detail', movie_id=review.movie.id)
         
     return redirect('login')
+
+def user_profile(request, username):
+    profile_user = get_object_or_404(User, username=username)
+    
+    user_reviews = profile_user.reviews.all().order_by('-created_at')
+    
+    return render(request, 'reviews/user_profile.html', {
+        'profile_user': profile_user,
+        'user_reviews': user_reviews
+    })

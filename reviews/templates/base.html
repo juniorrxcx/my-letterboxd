@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>My Letterboxd</title>
+    <link rel="stylesheet" href="{% static 'reviews/css/style.css' %}">
+</head>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f5f7;">
+    
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="{% url 'movie_list' %}">🎬 My Letterboxd</a>
+        </div>
+        <div class="nav-links">
+            {% if user.is_authenticated %}
+                <span style="color: white; margin-right: 15px;">Olá, {{ user.username }}!</span>
+                <a href="{% url 'user_profile' user.username %}">Meu Perfil</a>
+                
+                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-btn-logout">Sair</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Entrar</a>
+                <a href="{% url 'signup' %}" class="nav-btn-signup">Criar Conta</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    
+    <main style="max-width: 1400px; width: 95%; margin: 20px auto; padding: 30px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>

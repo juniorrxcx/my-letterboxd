@@ -1,36 +1,28 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>My Letterboxd</title>
-</head>
-<body>
-    <h1>Catálogo de Filmes</h1>
-    
-    <div style="margin-bottom: 20px;">
-        {% if user.is_authenticated %}
-            <p>Olá, {{ user.username }}! <a href="{% url 'logout' %}">Sair</a></p>
-        {% else %}
-            <p><a href="{% url 'login' %}">Faça Login</a> ou <a href="{% url 'signup' %}">Cadastre-se</a></p>
-        {% endif %}
-    </div>
+{% extends 'base.html' %}
 
-    <hr>
+{% block content %}
+    <h1 style="margin-top: 0;">Catálogo de Filmes</h1>
+    <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
     
-    {% for movie in movies %}
-        <div>
-            <h2>{{ movie.title }} ({{ movie.release_year }})</h2>
-            
-            {% if movie.poster %}
-                <img src="{{ movie.poster.url }}" alt="Pôster de {{ movie.title }}" style="max-width: 200px; display: block; margin-bottom: 10px;">
-            {% endif %}
-            
-            <p>{{ movie.synopsis }}</p>
-            <a href="{% url 'movie_detail' movie.id %}">Ver detalhes e avaliações</a>
-        </div>
-        <hr>
-    {% empty %}
-        <p>Nenhum filme cadastrado ainda. Use o painel de Admin para adicionar!</p>
-    {% endfor %}
-</body>
-</html>
+    <div class="movie-grid">
+        {% for movie in movies %}
+            <a href="{% url 'movie_detail' movie.id %}" class="movie-card">
+                <div class="movie-poster-container">
+                    {% if movie.poster %}
+                        <img src="{{ movie.poster.url }}" alt="Pôster de {{ movie.title }}">
+                    {% else %}
+                        <div style="width: 100%; height: 100%; background-color: #ccc; display: flex; align-items: center; justify-content: center; color: #666;">Sem Pôster</div>
+                    {% endif %}
+                    
+                    <div class="movie-synopsis-overlay">
+                        {{ movie.synopsis }}
+                    </div>
+                </div>
+                
+                <div class="movie-title">{{ movie.title }} ({{ movie.release_year }})</div>
+            </a>
+        {% empty %}
+            <p>Nenhum filme cadastrado ainda. Use o painel de Admin para adicionar!</p>
+        {% endfor %}
+    </div>
+{% endblock %}
