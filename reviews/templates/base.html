@@ -12,6 +12,15 @@
         <div class="nav-brand">
             <a href="{% url 'movie_list' %}">🎬 My Letterboxd</a>
         </div>
+        {% block searchbar %}
+        <div class="nav-search" style="flex-grow: 1; max-width: 400px; margin: 0 20px;">
+            <form action="{% url 'movie_list' %}" method="get" style="display: flex; width: 100%;">
+                <input type="text" name="q" placeholder="Buscar filmes por título..." value="{{ query|default_if_none:'' }}" style="flex-grow: 1; padding: 8px 12px; border-radius: 4px 0 0 4px; border: none; outline: none; font-size: 14px;">
+                <button type="submit" style="padding: 8px 15px; border-radius: 0 4px 4px 0; border: none; background-color: #00b020; color: white; cursor: pointer; font-weight: bold;">🔍</button>
+            </form>
+        </div>
+        {% endblock %}
+
         <div class="nav-links">
             {% if user.is_authenticated %}
                 <span style="color: white; margin-right: 15px;">Olá, {{ user.username }}!</span>

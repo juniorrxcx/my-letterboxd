@@ -2,8 +2,15 @@
 
 {% block content %}
     <h1 style="margin-top: 0;">Catálogo de Filmes</h1>
-    <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
+    {% if query %}
+        <div style="background-color: #e1e8ed; padding: 10px 15px; border-radius: 4px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <span>Mostrando resultados para: <strong>"{{ query }}"</strong></span>
+            <a href="{% url 'movie_list' %}" style="color: #e0245e; text-decoration: none; font-weight: bold; font-size: 14px;">✖ Limpar busca</a>
+        </div>
+    {% endif %}
     
+    <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
+
     <div class="movie-grid">
         {% for movie in movies %}
             <a href="{% url 'movie_detail' movie.id %}" class="movie-card">

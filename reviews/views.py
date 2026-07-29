@@ -6,8 +6,15 @@ from django.contrib.auth.decorators import login_required
 from .forms import ReviewForm, CustomSignupForm, ProfileUpdateForm
 
 def movie_list(request):
-    movies = Movie.objects.all().order_by('-release_year')
-    return render(request, 'reviews/movie_list.html', {'movies': movies})
+
+    query = request.GET.get('q')
+    
+    if query:
+        movies = Movie.objects.filter(title__icontains=query)
+    else:
+        movies = Movie.objects.all()
+        
+    return render(request, 'reviews/movie_list.html', {'movies': movies, 'query': query})
 
 def signup(request):
     if request.method == 'POST':
