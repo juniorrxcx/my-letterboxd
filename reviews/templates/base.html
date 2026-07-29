@@ -17,7 +17,11 @@
                 <span style="color: white; margin-right: 15px;">Olá, {{ user.username }}!</span>
                 <a href="{% url 'user_profile' user.username %}">Meu Perfil</a>
                 
-                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% if user.is_staff %}
+                    <a href="{% url 'admin:index' %}" style="color: #e0245e; font-weight: bold; margin-left: 15px;">⚙️ Painel Admin</a>
+                {% endif %}
+                
+                <form action="{% url 'logout' %}" method="post" style="display: inline; margin-left: 15px;">
                     {% csrf_token %}
                     <button type="submit" class="nav-btn-logout">Sair</button>
                 </form>
@@ -27,7 +31,6 @@
             {% endif %}
         </div>
     </nav>
-
     
     <main style="max-width: 1400px; width: 95%; margin: 20px auto; padding: 30px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
         {% block content %}

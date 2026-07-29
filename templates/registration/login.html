@@ -1,16 +1,17 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Login - My Letterboxd</title>
-</head>
-<body>
-    <h2>Entrar na sua conta</h2>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="auth-container">
+    <h2>Entrar no My Letterboxd</h2>
+    
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Entrar</button>
+        <button type="submit" class="btn-auth">Entrar</button>
     </form>
-    <p>Não tem uma conta? <a href="{% url 'signup' %}">Cadastre-se</a></p>
-</body>
-</html>
+    
+    <div class="auth-help-text">
+        Não tem uma conta? <a href="{% url 'signup' %}">Cadastre-se aqui</a>.
+    </div>
+</div>
+{% endblock %}

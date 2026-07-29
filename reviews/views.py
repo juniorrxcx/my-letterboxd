@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Movie, Review, Like
-from .forms import ReviewForm
+from django.contrib.auth.decorators import login_required
+from .forms import ReviewForm, CustomSignupForm, ProfileUpdateForm
 
 def movie_list(request):
     movies = Movie.objects.all().order_by('-release_year')
@@ -10,12 +11,12 @@ def movie_list(request):
 
 def signup(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomSignupForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('login') 
     else:
-        form = UserCreationForm()
+        form = CustomSignupForm()
     return render(request, 'registration/signup.html', {'form': form})
 
 
@@ -65,3 +66,15 @@ def user_profile(request, username):
         'profile_user': profile_user,
         'user_reviews': user_reviews
     })
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        if form.is_valid():
+            form.save()
+            return redirect('user_profile', username=request.user.username)
+    else:
+        form = ProfileUpdateForm(instance=request.user.profile)
+
+    return render(request, 'reviews/edit_profile.html', {'form': form})
