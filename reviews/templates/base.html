@@ -5,13 +5,110 @@
     <meta charset="UTF-8">
     <title>My Letterboxd</title>
     <link rel="stylesheet" href="{% static 'reviews/css/style.css' %}">
+    
+    <style>
+        body {
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f5f7;
+            color: #333333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        main {
+            flex-grow: 1; 
+            max-width: 1400px; 
+            width: 95%; 
+            margin: 30px auto; 
+            padding: 40px; 
+            background-color: white;
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: background-color 0.3s, box-shadow 0.3s, border 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: #14181c;
+            color: #9ab; 
+        }
+
+        body.dark-mode main {
+            background-color: #1c2228;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15); 
+            border: 1px solid #242c34;
+            color: #e1e8f0;
+        }
+
+        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, 
+        body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
+            color: #ffffff !important; 
+        }
+
+        body.dark-mode main a {
+            color: #ffffff !important;
+            text-decoration: none;
+        }
+        
+        body.dark-mode main a:hover {
+            color: #1da1f2 !important;
+        }
+
+        body.dark-mode .nav-search input {
+            background-color: #242c34 !important;
+            color: #ffffff !important;
+            border: 1px solid #323d4a !important;
+        }
+
+        body.dark-mode .nav-search input::placeholder {
+            color: #6d8194 !important;
+        }
+
+        body.dark-mode div[style*="background-color: white"], 
+        body.dark-mode div[style*="background-color: #fff"], 
+        body.dark-mode div[style*="background-color: #f5f8fa"], 
+        body.dark-mode div[style*="background-color: #fffafb"],
+        body.dark-mode div[style*="background-color: #e1e8ed"],
+        body.dark-mode div[style*="background-color: #ccc"],
+        body.dark-mode div[style*="background-color: #ddd"],
+        body.dark-mode div[style*="background-color: lightgray"] {
+            background-color: #242c34 !important;
+            border-color: #323d4a !important;
+            color: #e1e8f0 !important;
+        }
+
+        body.dark-mode p[style*="color: #333"], 
+        body.dark-mode p[style*="color: #444"], 
+        body.dark-mode p[style*="color: #666"],
+        body.dark-mode span[style*="color: #888"],
+        body.dark-mode label[style*="color: #14171a"] {
+            color: #e1e8f0 !important;
+        }
+
+        body.dark-mode .django-form input, 
+        body.dark-mode .django-form textarea, 
+        body.dark-mode .django-form select {
+            background-color: #14181c !important;
+            color: #e1e8f0 !important;
+            border: 1px solid #323d4a !important;
+        }
+
+        /* TÍTULOS DOS FILMES - Forçando a cor clara diretamente no HTML */
+        body.dark-mode .movie-title {
+            color: #ffffff !important;
+        }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f5f7;">
+<body>
     
     <nav class="navbar">
         <div class="nav-brand">
             <a href="{% url 'movie_list' %}">🎬 My Letterboxd</a>
         </div>
+        
         {% block searchbar %}
         <div class="nav-search" style="flex-grow: 1; max-width: 400px; margin: 0 20px;">
             <form action="{% url 'movie_list' %}" method="get" style="display: flex; width: 100%;">
@@ -21,7 +118,9 @@
         </div>
         {% endblock %}
 
-        <div class="nav-links">
+        <div class="nav-links" style="display: flex; align-items: center;">
+            <button id="theme-toggle" style="background: none; border: none; cursor: pointer; font-size: 1.2em; margin-right: 15px; padding: 0;" title="Alternar Modo Escuro">🌙</button>
+
             {% if user.is_authenticated %}
                 <span style="color: white; margin-right: 15px;">Olá, {{ user.username }}!</span>
                 <a href="{% url 'user_profile' user.username %}">Meu Perfil</a>
@@ -41,10 +140,32 @@
         </div>
     </nav>
     
-    <main style="max-width: 1400px; width: 95%; margin: 20px auto; padding: 30px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <main>
         {% block content %}
         {% endblock %}
     </main>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+
+            if (localStorage.getItem('theme') === 'dark') {
+                body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            }
+
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.textContent = '☀️';
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.textContent = '🌙';
+                }
+            });
+        });
+    </script>
 </body>
 </html>

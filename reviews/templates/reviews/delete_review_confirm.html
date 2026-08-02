@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; text-align: center; background-color: #fffafb; padding: 40px; border-radius: 8px; border: 1px solid #f5c6cb;">
+    <h2 style="color: #721c24; margin-top: 0;">Excluir Avaliação?</h2>
+    <p style="font-size: 1.1em; color: #333;">Você tem certeza que deseja excluir sua avaliação de <strong>"{{ review.movie.title }}"</strong>?</p>
+    <p style="color: #888; font-style: italic; margin-bottom: 30px;">"{{ review.comment|truncatechars:50 }}"</p>
+    
+    <form method="post" style="display: flex; justify-content: center; gap: 15px;">
+        {% csrf_token %}
+        <button type="submit" style="background-color: #e0245e; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer;">Sim, excluir para sempre</button>
+        <a href="{% url 'movie_detail' review.movie.id %}" style="padding: 10px 20px; text-decoration: none; color: #555; font-weight: bold; border: 1px solid #ccc; border-radius: 4px;">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

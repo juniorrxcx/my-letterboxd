@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .django-form p { display: flex; flex-direction: column; margin-bottom: 15px; }
+    .django-form label { font-weight: bold; margin-bottom: 5px; color: #14171a; font-size: 0.95em; }
+    .django-form select, .django-form textarea, .django-form input {
+        width: 100%; padding: 12px; border: 1px solid #cfd9de; border-radius: 6px; background-color: #fff; font-family: inherit; font-size: 1em; box-sizing: border-box;
+    }
+    .django-form select:focus, .django-form textarea:focus, .django-form input:focus { outline: none; border-color: #1da1f2; box-shadow: 0 0 0 1px #1da1f2; }
+    .django-form textarea { resize: vertical; min-height: 120px; }
+</style>
+
+<div style="max-width: 600px; margin: 0 auto; background-color: #f5f8fa; padding: 30px; border-radius: 8px; border: 1px solid #e1e8ed;">
+    <h2 style="margin-top: 0;">Editar Avaliação</h2>
+    <p style="color: #666; margin-bottom: 20px;">Filme: <strong>{{ movie.title }}</strong></p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="django-form">
+            {{ form.as_p }}
+        </div>
+        
+        <div style="margin-top: 20px; display: flex; gap: 15px;">
+            <button type="submit" style="background-color: #1da1f2; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; flex-grow: 1;">Salvar Alterações</button>
+            <a href="{% url 'movie_detail' movie.id %}" style="padding: 10px 20px; text-decoration: none; color: #555; font-weight: bold; border: 1px solid #ccc; border-radius: 4px; text-align: center; background: white;">Cancelar</a>
+        </div>
+    </form>
+</div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const ratingSelect = document.getElementById('id_rating');
+            
+            if (ratingSelect) {
+                ratingSelect.style.display = 'none';
+
+                const starContainer = document.createElement('div');
+                starContainer.style.fontSize = '2.5em'; 
+                starContainer.style.cursor = 'pointer';
+                starContainer.style.marginTop = '-5px';
+                starContainer.style.marginBottom = '15px';
+                starContainer.style.display = 'flex';
+                starContainer.style.gap = '5px';
+
+                let stars = [];
+
+                for (let i = 1; i <= 5; i++) {
+                    let star = document.createElement('span');
+                    star.innerHTML = '★';
+                    star.dataset.value = i;
+                    star.style.color = '#ccc'; 
+                    star.style.transition = 'color 0.2s';
+                    
+                    star.addEventListener('mouseover', function() {
+                        updateStars(i);
+                    });
+                    
+                    starContainer.addEventListener('mouseleave', function() {
+                        updateStars(ratingSelect.value); 
+                    });
+                    
+                    star.addEventListener('click', function() {
+                        ratingSelect.value = i;
+                        updateStars(i);
+                    });
+                    
+                    stars.push(star);
+                    starContainer.appendChild(star);
+                }
+
+                ratingSelect.parentNode.insertBefore(starContainer, ratingSelect.nextSibling);
+
+                function updateStars(value) {
+                    stars.forEach((s, index) => {
+                        if (index < value) {
+                            s.style.color = '#f5a623'; 
+                        } else {
+                            s.style.color = '#ccc';
+                        }
+                    });
+                }
+
+                updateStars(ratingSelect.value);
+            }
+        });
+    </script>
+{% endblock %}

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from .models import Movie, Review, Like
 from django.contrib.auth.decorators import login_required
 from .forms import ReviewForm, CustomSignupForm, ProfileUpdateForm
+from django.core.exceptions import PermissionDenied
 
 def movie_list(request):
 
@@ -85,3 +86,34 @@ def edit_profile(request):
         form = ProfileUpdateForm(instance=request.user.profile)
 
     return render(request, 'reviews/edit_profile.html', {'form': form})
+
+@login_required
+def edit_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    
+    if review.user != request.user:
+        raise PermissionDenied
+    
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            return redirect('movie_detail', movie_id=review.movie.id)
+    else:
+        form = ReviewForm(instance=review)
+        
+    return render(request, 'reviews/edit_review.html', {'form': form, 'movie': review.movie})
+
+@login_required
+def delete_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    
+    if review.user != request.user:
+        raise PermissionDenied
+        
+    if request.method == 'POST':
+        movie_id = review.movie.id
+        review.delete()
+        return redirect('movie_detail', movie_id=movie_id)
+        
+    return render(request, 'reviews/delete_review_confirm.html', {'review': review})

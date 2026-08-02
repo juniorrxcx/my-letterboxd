@@ -29,8 +29,6 @@
     letter-spacing: 2px;
 }
 
-
-
 .navbar {
     background-color: #14181c;
     padding: 15px 30px;
@@ -217,4 +215,29 @@
 .auth-help-text a {
     color: #1da1f2;
     text-decoration: none;
+}
+
+body.dark-mode .movie-title {
+    color: #e1e8f0;
+}
+
+body.dark-mode .auth-container {
+    background-color: #242c34;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+body.dark-mode .auth-container h2 {
+    color: #ffffff;
+}
+
+body.dark-mode .auth-container label {
+    color: #9ab;
+}
+
+body.dark-mode .auth-container input[type="text"],
+body.dark-mode .auth-container input[type="password"],
+body.dark-mode .auth-container input[type="email"] {
+    background-color: #14181c;
+    color: #ffffff;
+    border: 1px solid #323d4a;
 }
